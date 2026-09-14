@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-gov-blue: #1351b4;
+  --color-gov-blue-hover: #0c326f;
+  --color-gov-green: #168821;
+  --color-gov-green-hover: #106618;
+  --color-gov-yellow: #ffcd07;
+  --color-gov-bg: #f8fafc;
+  --color-gov-border: #e2e8f0;
+  --color-gov-text: #1e293b;
+  --color-gov-text-muted: #64748b;
+  --color-gov-error: #dc2626;
+
+  /* Login screen palette — kept separate from the --color-gov-* tokens used
+     across the rest of the app so this redesign doesn't shift other screens. */
+  --color-brand-primary: #1d5fc7;
+  --color-brand-primary-hover: #1555b7;
+  --color-brand-dark-1: #0c294a;
+  --color-brand-dark-2: #123c6a;
+  --color-brand-dark-3: #14558b;
+  --color-brand-light-blue: #83c8fb;
+  --color-brand-bg: #f9fbfe;
+  --color-brand-text: #102746;
+  --color-brand-text-muted: #738195;
+  --color-brand-success: #157544;
+  --color-brand-success-light: #65d392;
+  --color-brand-border: #d7e0ea;
+  --color-brand-icon: #9aaabd;
+}
+
+body {
+  background-color: var(--color-gov-bg);
+  color: var(--color-gov-text);
+}
+
+/* ---------------------------------------------------------------------- */
+/* Login screen — brand panel visualization + entrance/status animations  */
+/* ---------------------------------------------------------------------- */
+
+.login-heading {
+  font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
+
+.login-shell,
+.login-shell input,
+.login-shell button {
+  font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+}
+
+.form-wrap {
+  animation: reveal 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-dot {
+  animation: breathe 2.2s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(0.75);
+    opacity: 0.65;
+  }
+}
+
+.data-viz {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(115, 199, 251, 0.18), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(159, 220, 255, 0.14), transparent 50%);
+  animation: data-atmosphere 18s ease-in-out infinite alternate;
+}
+
+@keyframes data-atmosphere {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.06) translate(-12px, 10px);
+  }
+}
+
+.data-grid {
+  position: absolute;
+  inset: -20px;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 28px 28px;
+  animation: grid-pan 24s linear infinite;
+}
+
+@keyframes grid-pan {
+  from {
+    background-position: 0 0;
+  }
+  to {
+    background-position: 56px 56px;
+  }
+}
+
+.stream-path {
+  animation: stream-flow linear infinite;
+}
+
+@keyframes stream-flow {
+  to {
+    stroke-dashoffset: -160;
+  }
+}
+
+.dataset-tag {
+  position: absolute;
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #eaf4ff;
+  white-space: nowrap;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  animation: tag-fade 6s ease-in-out infinite both;
+}
+
+@keyframes tag-fade {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  15%,
+  85% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .data-viz {
+    opacity: 0.55;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Brand panel goes auto-height on small screens, so there isn't enough
+     room for percentage-positioned tags without them landing on top of
+     the heading/paragraph text — simplest safe fix is to hide them here. */
+  .dataset-tag {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .form-wrap,
+  .status-dot,
+  .data-viz,
+  .data-grid,
+  .stream-path,
+  .dataset-tag {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

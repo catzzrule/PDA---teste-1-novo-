@@ -1,0 +1,30 @@
+# Node / frontend
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# Python / backend
+backend/__pycache__/
+backend/**/__pycache__/
+backend/.venv/
+backend/venv/
+backend/*.egg-info/
+backend/.pytest_cache/
+backend/storage/*
+!backend/storage/.gitkeep
+
+# Env files (never commit real secrets)
+.env
+backend/.env
+frontend/.env
+!*.env.example
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+
+# Old Supabase-based prototype — kept on disk as local reference, already
+# tracked in its own repo (github.com/catzzrule/Formulario-PDA-), not part
+# of this repo to avoid mixing the two projects' history.
+/forms/
+/supabase/
