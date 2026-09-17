@@ -13,4 +13,6 @@ COPY . .
 
 EXPOSE 8000
 
+# Local dev (docker-compose) uses --reload; production (Render) overrides
+# this via render.yaml's dockerCommand to run migrations + a bare uvicorn.
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]

@@ -1,0 +1,51 @@
+databases:
+  - name: pda-db
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: pda-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: sh -c "alembic upgrade head && python -m app.seed && uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: pda-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://pda-frontend.onrender.com
+      - key: STORAGE_DIR
+        value: /app/storage
+      - key: PUBLIC_BASE_URL
+        value: https://pda-backend.onrender.com
+      - key: FRONTEND_BASE_URL
+        value: https://pda-frontend.onrender.com
+      - key: REFRESH_COOKIE_SECURE
+        value: "true"
+      - key: REFRESH_COOKIE_SAMESITE
+        value: "none"
+      - key: SEED_MASTER_EMAIL
+        sync: false
+      - key: SEED_MASTER_PASSWORD
+        sync: false
+
+  - type: web
+    name: pda-frontend
+    runtime: static
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    rootDir: frontend
+    envVars:
+      - key: VITE_API_URL
+        value: https://pda-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
