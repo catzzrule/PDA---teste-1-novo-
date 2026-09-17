@@ -1,8 +1,3 @@
-databases:
-  - name: pda-db
-    plan: free
-    postgresMajorVersion: "16"
-
 services:
   - type: web
     name: pda-backend
@@ -13,10 +8,13 @@ services:
     plan: free
     healthCheckPath: /health
     envVars:
+      # Database is hosted on Supabase, not on Render — paste the connection
+      # string from the Supabase dashboard (Project Settings → Database →
+      # Connection string → URI, "Direct connection", port 5432) into this
+      # env var on Render's dashboard after the first deploy. Keep it out of
+      # git; that's what `sync: false` means here.
       - key: DATABASE_URL
-        fromDatabase:
-          name: pda-db
-          property: connectionString
+        sync: false
       - key: JWT_SECRET
         generateValue: true
       # Frontend lives on GitHub Pages (see .github/workflows/deploy-pages.yml),
