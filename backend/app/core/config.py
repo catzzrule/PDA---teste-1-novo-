@@ -1,6 +1,5 @@
 from functools import lru_cache
 
-from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -8,18 +7,6 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
     database_url: str = "postgresql+asyncpg://pda:pda@localhost:5432/pda"
-
-    @field_validator("database_url")
-    @classmethod
-    def _use_asyncpg_driver(cls, v: str) -> str:
-        # Managed Postgres providers (Render, Heroku, etc.) hand out
-        # postgres:// / postgresql:// URLs; SQLAlchemy's async engine needs
-        # the asyncpg driver explicitly in the scheme.
-        if v.startswith("postgres://"):
-            return v.replace("postgres://", "postgresql+asyncpg://", 1)
-        if v.startswith("postgresql://"):
-            return v.replace("postgresql://", "postgresql+asyncpg://", 1)
-        return v
 
     jwt_secret: str = "change-me-in-production"
     jwt_algorithm: str = "HS256"
@@ -42,10 +29,6 @@ class Settings(BaseSettings):
 
     refresh_cookie_name: str = "pda_refresh_token"
     refresh_cookie_secure: bool = False
-    # "lax" works for local dev (same registrable site on different ports);
-    # cross-domain deploys (frontend/backend on separate hosts) need "none"
-    # + refresh_cookie_secure=True or the browser won't send the cookie.
-    refresh_cookie_samesite: str = "lax"
 
     @property
     def cors_origins_list(self) -> list[str]:
