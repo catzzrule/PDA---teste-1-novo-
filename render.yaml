@@ -19,14 +19,16 @@ services:
           property: connectionString
       - key: JWT_SECRET
         generateValue: true
+      # Frontend lives on GitHub Pages (see .github/workflows/deploy-pages.yml),
+      # not on Render — update these two if the GitHub org/repo name changes.
       - key: CORS_ORIGINS
-        value: https://pda-frontend.onrender.com
+        value: https://catzzrule.github.io
       - key: STORAGE_DIR
         value: /app/storage
       - key: PUBLIC_BASE_URL
         value: https://pda-backend.onrender.com
       - key: FRONTEND_BASE_URL
-        value: https://pda-frontend.onrender.com
+        value: https://catzzrule.github.io/PDA---teste-1-novo-
       - key: REFRESH_COOKIE_SECURE
         value: "true"
       - key: REFRESH_COOKIE_SAMESITE
@@ -35,17 +37,3 @@ services:
         sync: false
       - key: SEED_MASTER_PASSWORD
         sync: false
-
-  - type: web
-    name: pda-frontend
-    runtime: static
-    buildCommand: npm install && npm run build
-    staticPublishPath: ./dist
-    rootDir: frontend
-    envVars:
-      - key: VITE_API_URL
-        value: https://pda-backend.onrender.com
-    routes:
-      - type: rewrite
-        source: /*
-        destination: /index.html
